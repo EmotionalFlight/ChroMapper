@@ -30,6 +30,8 @@ public class BeatmapEventInputController : BeatmapInputController<BeatmapEventCo
                     e.eventData._value = MapEvent.LIGHT_VALUE_TO_ROTATION_DEGREES.ToList().IndexOf((rotation ?? 0) * -1);
                 else if (e.eventData._value >= 1000 && e.eventData._value <= 1720) //Invert Mapping Extensions rotation
                     e.eventData._value = 1720 - (e.eventData._value - 1000);
+		if (e.eventData._customData != null && e.eventData._customData.HasKey("_rotation"))
+		    e.eventData._customData["_rotation"] = -e.eventData._customData["_rotation"];
 
                 tracksManager?.RefreshTracks();
             }
@@ -79,7 +81,12 @@ public class BeatmapEventInputController : BeatmapInputController<BeatmapEventCo
         }
 
         if (e.eventData.IsRotationEvent)
+	{
+	    if (e.eventData._customData != null && e.eventData._customData.HasKey("_rotation"))
+	       e.eventData._customData["_rotation"] += modifier;
+	    
             tracksManager?.RefreshTracks();
+	}
         eventAppearanceSO.SetEventAppearance(e);
         BeatmapActionContainer.AddAction(new BeatmapObjectModifiedAction(e.objectData, e.objectData, original));
     }

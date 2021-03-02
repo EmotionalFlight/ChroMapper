@@ -77,7 +77,13 @@ public class MapEvent : BeatmapObject {
 
     public int? GetRotationDegreeFromValue()
     {   //Mapping Extensions precision rotation from 1000 to 1720: 1000 = -360 degrees, 1360 = 0 degrees, 1720 = 360 degrees
-        int val = _customData != null && _customData.HasKey("_queuedRotation") ? _customData["_queuedRotation"].AsInt : _value;
+        //Noodle Extensions precision rotation is a float value: cast this to int for now
+
+	int val = _customData != null && _customData.HasKey("_queuedRotation") ? _customData["_queuedRotation"].AsInt : _value;
+	if (_customData != null && _customData.HasKey("_rotation"))
+	{
+	   return (int)_customData["_rotation"].AsFloat;
+	}
         if (val >= 0 && val < LIGHT_VALUE_TO_ROTATION_DEGREES.Length) return LIGHT_VALUE_TO_ROTATION_DEGREES[val];
         else if (val >= 1000 && val <= 1720) return val - 1360;
         return null;
